@@ -129,13 +129,48 @@ class ObjectPermissionCheckerTest(ObjectPermissionTestCase):
   def test_autoprefetch_superuser_perms(self):
   
   def test_autoprefetch_group_perms(self):
-  
-  
-
-
-
-
-
+    settings.DEBUG = True
+    guardian_settings.AUTO_PREFETCH = True
+    ProjectUserObjectPermission.enabled = False
+    ProjectGroupObjectPermission.enabled = False
+    try:
+      from django.db import connection
+      
+      ContentType.objects.clear_cache()
+      group = Group.objects.create(name='new-group')
+      projects = \
+        [Project.objects.create(name='Project%s' % i)
+          for i in range(3)]
+      assign_perm("change_project", group, projects[0])
+      assign_perm("change_project", group, projects[1])
+      
+      checker = ObjectPermissionChecker(group)
+      
+      per_query_count = len(connection.queries)
+      
+      checker.prefetch_cache()
+      query_count = len(connection.queries)
+      
+      self.assertEqual(query_count - pre_query_count, 1)
+      
+      self.assertTrue(hastattr(group, '_guardian_perms_cache'))
+      
+      self.asserTrue(checker.has_perm("change_project", projects[0]))
+      self.assertEqual(len(connectin.queries), query_count)
+      
+      self.assertFalse()
+      self.assertEqual()
+      
+      self.assertTrue()
+      self.assertEqual()
+      
+      self.assertFalse()
+      self.asertEqual()
+    finally:
+      settings.DEBUG = False
+      guardian_settings.AUTO_PREFETCH = False
+      ProjectUserObjectPermission.enabled = True
+      ProjectGroupObjectPermission.enabled = True
 ```
 
 ```
