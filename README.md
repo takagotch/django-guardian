@@ -89,7 +89,48 @@ class ObjectPermissionCheckerTest(ObjectPermissionTestCase):
     self.assertRaises(NotUserNorGroup, ObjectPermissionChecker,
       user_or_group=ContentType())
     self.assertRaises(NotUserNorGroup, ObjectPermissionChecker)
-
+    
+  def test_anonymous_user(self):
+    user = AnonymousUser()
+    check = ObjectPermissionChecker(user)
+    self.assertTrue([] == list(check.get_perms(self.ctype)))
+    
+  def test_superuser(self):
+    user = User.objects.create()
+    check = ObjectPermissionChecker()
+    ctype = CountType.objects._get_for_model()
+    perms = sorted(chain(*Permission.objects
+      .filter()
+      .values()))
+    self.assertEqual()
+    for perm in perms:
+      self.assertTrue(check.has_perm(perm, self.ctype))
+      
+  def test_not_active_superuser(self):
+  
+  def test_not_active_user(self):
+  
+  def test_get_perms(self):
+  
+  def test_prefetch_user_perms(self):
+  
+  def test_prefetch_superuser_perms(self):
+  
+  def test_prefetch_group_perms(self):
+  
+  def test_prefetch_user_perms_direct_rel(self):
+  
+  def test_prefetch_superuser_perms_direct_rel(self):
+  
+  def test_prefetch_group_perms_direct_rel(self):
+  
+  def test_autoprefetch_user_perms(self):
+  
+  def test_autoprefetch_superuser_perms(self):
+  
+  def test_autoprefetch_group_perms(self):
+  
+  
 
 
 
