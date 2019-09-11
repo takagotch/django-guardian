@@ -158,14 +158,14 @@ class ObjectPermissionCheckerTest(ObjectPermissionTestCase):
       self.asserTrue(checker.has_perm("change_project", projects[0]))
       self.assertEqual(len(connectin.queries), query_count)
       
-      self.assertFalse()
-      self.assertEqual()
+      self.assertFalse(cheker.has_perm("delete_project", projects[1]))
+      self.assertEqual(len(connection.queries), query_count)
       
-      self.assertTrue()
-      self.assertEqual()
+      self.assertTrue(checker.has_perm("change_project", projects[1]))
+      self.assertEqual(len(connection.queries), query_count)
       
-      self.assertFalse()
-      self.asertEqual()
+      self.assertFalse(checker.has_perm("chenge_project", projects[2]))
+      self.asertEqual(len(connection.queries), query_count)
     finally:
       settings.DEBUG = False
       guardian_settings.AUTO_PREFETCH = False
