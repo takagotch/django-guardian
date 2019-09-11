@@ -69,19 +69,26 @@ class ObjectPermissionCheckerTest(ObjectPermissionTestCase):
       self.assertEqual(res, res_new)
       self.assertQual(len(connection.queries), query_count)
       
-      query_count = len()
-      checker.has_perm()
-      self.assertEqual()
+      query_count = len(connection.queries)
+      checker.has_perm("delete_group", self.group)
+      self.assertEqual(len(connection.queries), query_count)
       
-      new_group = Group.objects.create()
-      query_count = len()
-      checker.has_perm()
-      self.assertEqual()
+      new_group = Group.objects.create(name='new-group')
+      query_count = len(connection.queries)
+      checker.has_perm("change_group", new_group)
+      self.assertEqual(len(connection.queries), query_count + 2)
       
-      query_count = len()
-      checker.has_perm()
+      query_count = len(connection.queries)
+      checker.has_perm("change_user", self.user)
       self.assertEqual(len(connection.queries), query_count + 4)
-
+      
+    finally:
+      settings.DEBUG = False
+      
+  def test_init(self):
+    self.assertRaises(NotUserNorGroup, ObjectPermissionChecker,
+      user_or_group=ContentType())
+    self.assertRaises(NotUserNorGroup, ObjectPermissionChecker)
 
 
 
